@@ -1,0 +1,17 @@
+{
+    "name": "line-transform-stream",
+    "version": "0.1.0",
+    "description": "A transform stream class to conveniently modify streamable data line by line.",
+    "author": "Nick Schwarzenberg <nick@bitfasching.de>",
+    "license": "MIT",
+    "main": "./line-transform-stream.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bitfasching/node-line-transform-stream"
+    },
+    "keywords": [
+        "line", "transform", "stream", "stdin", "stdout", "readline"
+    ],
+    "preferGlobal": false,
+    "private": false
+}
