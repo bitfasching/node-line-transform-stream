@@ -13,5 +13,6 @@
         "line", "transform", "stream", "stdin", "stdout", "readline"
     ],
     "preferGlobal": false,
-    "private": false
+    "private": false,
+    "types": "./typings/index.d.ts"
 }
