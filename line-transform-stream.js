@@ -80,6 +80,19 @@ class LineTransformStream extends Transform
         // push output
         callback( null, output )
     }
+
+    // write last line
+    _final( callback ){
+        try
+        {
+            this.push(this.transformCallback(this.lineBuffer));
+            callback();
+        }
+        catch ( error )
+        {
+            callback(error);
+        }
+    }
 }
 
 
