@@ -63,8 +63,9 @@ class LineTransformStream extends Transform
         let output = ''
 
         // process line by line
-        lines.forEach( ( line ) =>
+        for(let i = 0; i < lines.length; i++)
         {
+            const line = lines[i];
             try
             {
                 // pass line to callback, transform it and add line-break back
@@ -74,8 +75,10 @@ class LineTransformStream extends Transform
             {
                 // catch processing errors and emit as stream error
                 callback( error )
+                // callback can be called only once so we must break
+                return
             }
-        })
+        }
 
         // push output
         callback( null, output )
