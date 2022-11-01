@@ -1,6 +1,6 @@
 {
     "name": "line-transform-stream",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "A transform stream class to conveniently modify streamable data line by line.",
     "author": "Nick Schwarzenberg <nick@bitfasching.de>",
     "license": "MIT",
