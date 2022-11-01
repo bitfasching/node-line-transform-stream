@@ -6,7 +6,7 @@
  *
  * Nick Schwarzenberg
  * nick@bitfasching.de
- * v0.1.0, 04/2017
+ * v0.2.0, 11/2022
  *
  * License: MIT
  */
@@ -21,7 +21,7 @@ const Transform = require( 'stream' ).Transform
 // extend Transform stream class
 class LineTransformStream extends Transform
 {
-    constructor( transformCallback, stringEncoding='utf8' )
+    constructor( transformCallback, stringEncoding='utf8', newlineCharacter='\n' )
     {
         // fail if callback is not a function
         if ( typeof transformCallback != 'function' )
@@ -39,6 +39,9 @@ class LineTransformStream extends Transform
         // set string encoding
         this.stringEncoding = stringEncoding
 
+        // set newline character
+        this.newlineCharacter = newlineCharacter
+
         // initialize internal line buffer
         this.lineBuffer = ''
     }
@@ -50,7 +53,7 @@ class LineTransformStream extends Transform
         data = data.toString( this.stringEncoding )
 
         // split data at line breaks
-        const lines = data.split( '\n' )
+        const lines = data.split( this.newlineCharacter )
 
         // prepend buffered data to first line
         lines[0] = this.lineBuffer + lines[0]
@@ -68,7 +71,7 @@ class LineTransformStream extends Transform
             try
             {
                 // pass line to callback, transform it and add line-break back
-                output += this.transformCallback( line ) + '\n'
+                output += this.transformCallback( line ) + this.newlineCharacter
             }
             catch ( error )
             {
