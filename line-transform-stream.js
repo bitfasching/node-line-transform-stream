@@ -2,11 +2,11 @@
  * Line Transform Stream
  *
  * A transform stream class to conveniently modify streamable data line by line.
- * Written in ES2015.
+ * Written in ES2015 (ES6).
  *
  * Nick Schwarzenberg
  * nick@bitfasching.de
- * v0.2.0, 11/2022
+ * v1.0.0, 11/2022
  *
  * License: MIT
  */
@@ -46,42 +46,70 @@ class LineTransformStream extends Transform
         this.lineBuffer = ''
     }
 
-    // implement transform method (input encoding is ignored)
-    _transform( data, encoding, callback )
+    // implement transform method (input encoding will be ignored in favor of encoding set in constructor)
+    _transform( data, encoding, streamCallback )
     {
-        // convert data to string
-        data = data.toString( this.stringEncoding )
+        // convert buffer to string
+        const text = data.toString( this.stringEncoding )
 
-        // split data at line breaks
-        const lines = data.split( this.newlineCharacter )
+        // split data at newline
+        const lines = text.split( this.newlineCharacter )
 
-        // prepend buffered data to first line
+        // prepend previously buffered data to first line
         lines[0] = this.lineBuffer + lines[0]
 
-        // last "line" is actually not a complete line,
-        // remove it and store it for next time
+        // last "line" is probably not a complete line,
+        // remove it from the processing array and store it for next time
         this.lineBuffer = lines.pop()
 
-        // collect output
-        let output = ''
+        // process and push data with adding newline back
+        this.handleLines( streamCallback, this.transformCallback, lines, this.newlineCharacter )
+    }
 
-        // process line by line
-        lines.forEach( ( line ) =>
+    // implement flush method to catch end of stream
+    _flush( streamCallback )
+    {
+        // anything remaining in line buffer?
+        if ( this.lineBuffer != '' )
         {
-            try
-            {
-                // pass line to callback, transform it and add line-break back
-                output += this.transformCallback( line ) + this.newlineCharacter
-            }
-            catch ( error )
-            {
-                // catch processing errors and emit as stream error
-                callback( error )
-            }
-        })
+            // pass remaining buffer contents as single line
+            const lines = [ this.lineBuffer ]
 
-        // push output
-        callback( null, output )
+            // process and push data
+            this.handleLines( streamCallback, this.transformCallback, [ this.lineBuffer ], '' )
+        }
+    }
+
+    // handle array of lines of text
+    handleLines( streamCallback, transformCallback, lines, appendToOutput )
+    {
+        // processed output will be collected
+        let processedOutput = ''
+
+        try
+        {
+            // process line by line
+            lines.forEach( line =>
+            {
+                // pass line through processing callback
+                processedOutput += transformCallback( line )
+
+                // add back whatever has been removed from line
+                // (will be the newline character unless at the end of stream)
+                processedOutput += appendToOutput
+            })
+        }
+        catch ( error )
+        {
+            // catch processing errors and emit as stream error
+            streamCallback( error )
+
+            // don't fire the callback again below
+            return
+        }
+
+        // indicate end of processing and push aggregated output
+        streamCallback( null, processedOutput )
     }
 }
 
