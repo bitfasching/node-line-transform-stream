@@ -79,7 +79,7 @@ class LineTransformStream extends Transform
             this.handleLines( streamCallback, this.transformCallback, [ this.lineBuffer ], '' )
         }else{
             // otherwise run callback immediately
-            streamCallback(null);
+            streamCallback(null)
         }
     }
 
