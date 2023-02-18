@@ -78,7 +78,7 @@ class LineTransformStream extends Transform
             // process and push data
             this.handleLines( streamCallback, this.transformCallback, [ this.lineBuffer ], '' )
         }else{
-            // else, run callback immediately
+            // otherwise run callback immediately
             streamCallback(null);
         }
     }
