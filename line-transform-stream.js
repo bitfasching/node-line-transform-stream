@@ -4,9 +4,9 @@
  * A transform stream class to conveniently modify streamable data line by line.
  * Written in ES2015 (ES6).
  *
- * Nick Schwarzenberg
- * nick@bitfasching.de
- * v1.0.0, 11/2022
+ * Nick Schwarzenberg <nick@bitfasching.de>
+ * mtripg6666tdr <contact@usamyon.moe>
+ * v1.0.1, 07/2023
  *
  * License: MIT
  */
@@ -77,9 +77,11 @@ class LineTransformStream extends Transform
 
             // process and push data
             this.handleLines( streamCallback, this.transformCallback, [ this.lineBuffer ], '' )
-        }else{
+        }
+        else
+        {
             // otherwise run callback immediately
-            streamCallback(null)
+            streamCallback( null )
         }
     }
 
